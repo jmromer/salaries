@@ -2,4 +2,4 @@ test:
   pre:
     - pip install nose
   override:
-    - nosetest tests
+    - nosetests tests
