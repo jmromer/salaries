@@ -35,32 +35,28 @@ def monthly_headcount_as_json(employees_list, department=None):
     df['date'] = pd.to_datetime(df['date'])
     df['month'] = df['date'].apply(lambda x: x.replace(day=1))
 
+    # sort by month and keep only the last entry for a given employee within
+    # the month (for cases where an employee transitions between departments
+    # within the month).
+    df = df.sort_values('date', ascending=True)
+    df = df.drop_duplicates(subset=['month', 'employee'], keep='last')
+
     # limit search to a particular department if a department is provided
     if department:
         department_name = department.lower()
         df['dept'] = df['dept'].apply(lambda x: x.lower())
         df = df[df.dept == department_name]
 
-    # sort by month and keep only the last entry for a given employee within
-    # the month (for cases where an employee transitions between departments
-    # within the month).
-    sorted_uniques_df = df.sort_values(
-        'month', ascending=True).drop_duplicates(
-            subset=['month', 'employee'], keep='last')
-
     # map months to employee counts
-    headcounts_df = sorted_uniques_df[['month', 'employee'
-                                       ]].groupby('month').agg('count')
+    df = df[['month', 'employee']].groupby('month').agg('count')
 
     # rename employee count column to 'headcount'
-    headcounts_df.rename(columns={'employee': 'headcount'}, inplace=True)
+    df.rename(columns={'employee': 'headcount'}, inplace=True)
 
     # insert months as a column of strings in first position
-    headcounts_df.insert(0, 'month', [
-        time.strftime('%Y-%m-%d') for time in headcounts_df.index
-    ])
+    df.insert(0, 'month', [time.strftime('%Y-%m-%d') for time in df.index])
 
     # convert to a list of records
-    headcounts_dict = headcounts_df.to_dict(orient='records')
+    headcounts_dict = df.to_dict(orient='records')
 
     return json.dumps({'data': headcounts_dict})

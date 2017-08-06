@@ -4,14 +4,125 @@ from models import employee_headcount as Headcount
 from nose.tools import assert_equal
 
 
-class TestEmployeeSalary(object):
-    def test_monthly_headcount_as_json(self):
+class Test_monthly_headcount_as_json(object):
+    def test_correctly_counts_employees_per_month(self):
+        employees = [{
+            'date': '2015-01-01',
+            'employee': 2,
+            'salary': 10,
+            'dept': 'Engineering'
+        }, {
+            'date': '2015-01-01',
+            'employee': 3,
+            'salary': 10,
+            'dept': 'Engineering'
+        }, {
+            'date': '2015-02-01',
+            'employee': 3,
+            'salary': 10,
+            'dept': 'Engineering'
+        }]
+
+        headcount = Headcount.monthly_headcount_as_json(employees)
+
+        expected = {
+            'data': [{
+                'month': '2015-01-01',
+                'headcount': 2
+            }, {
+                'month': '2015-02-01',
+                'headcount': 1
+            }]
+        }
+        assert_equal(json.loads(headcount), expected)
+
+    def test_does_not_count_duplicates_within_a_month(self):
+        employees = [{
+            'date': '2015-01-01',
+            'employee': 2,
+            'salary': 10,
+            'dept': 'Engineering'
+        }, {
+            'date': '2015-01-15',
+            'employee': 2,
+            'salary': 10,
+            'dept': 'Design'
+        }, {
+            'date': '2015-02-01',
+            'employee': 3,
+            'salary': 10,
+            'dept': 'Engineering'
+        }]
+
+        headcount = Headcount.monthly_headcount_as_json(employees)
+
+        expected = {
+            'data': [{
+                'month': '2015-01-01',
+                'headcount': 1
+            }, {
+                'month': '2015-02-01',
+                'headcount': 1
+            }]
+        }
+        assert_equal(json.loads(headcount), expected)
+
+    def test_filters_search_by_department_if_provided(self):
+        employees = [{
+            'date': '2015-01-01',
+            'employee': 2,
+            'salary': 10,
+            'dept': 'Engineering'
+        }, {
+            'date': '2015-01-15',
+            'employee': 2,
+            'salary': 10,
+            'dept': 'Design'
+        }, {
+            'date': '2015-02-01',
+            'employee': 3,
+            'salary': 10,
+            'dept': 'Engineering'
+        }]
+
+        headcount = Headcount.monthly_headcount_as_json(employees, 'design')
+
+        expected = {'data': [{'month': '2015-01-01', 'headcount': 1}]}
+        assert_equal(json.loads(headcount), expected)
+
+    def test_counts_only_most_recent_entry_for_an_employee_within_month(self):
+        employees = [{
+            'date': '2015-01-01',
+            'employee': 2,
+            'salary': 10,
+            'dept': 'Engineering'
+        }, {
+            'date': '2015-01-15',
+            'employee': 2,
+            'salary': 10,
+            'dept': 'Design'
+        }, {
+            'date': '2015-02-15',
+            'employee': 3,
+            'salary': 10,
+            'dept': 'Engineering'
+        }]
+
+        headcount = Headcount.monthly_headcount_as_json(
+            employees, 'engineering')
+
+        expected = {'data': [{'month': '2015-02-01', 'headcount': 1}]}
+        assert_equal(json.loads(headcount), expected)
+
+    def test_returns_an_empty_data_set_if_dept_name_unrecognized(self):
         employees = [{
             'date': '2015-01-01',
             'employee': 2,
             'salary': 10,
             'dept': 'Engineering'
         }]
-        expected = {'data': [{'month': '2015-01-01', 'headcount': 1}]}
-        headcount = Headcount.monthly_headcount_as_json(employees)
-        assert_equal(expected, json.loads(headcount))
+
+        headcount = Headcount.monthly_headcount_as_json(
+            employees, 'animal husbandry')
+
+        assert_equal(json.loads(headcount), {'data': []})
