@@ -24,12 +24,12 @@ def average_current_salaries_as_json(employees_list):
 
     # sort by employees and date, keeping only the most recent entry
     # for a given employee
-    uniques_df = df.sort_values(
+    df = df.sort_values(
         ['employee', 'date'], ascending=[True, False]).drop_duplicates(
             subset='employee', keep='first')
 
     # compute mean salary for each department
-    avg_salaries = uniques_df[['dept', 'salary']].groupby('dept').agg('mean')
+    df = df[['dept', 'salary']].groupby('dept').agg('mean')
 
     # return json mapping department name to mean salary
-    return avg_salaries['salary'].to_json()
+    return df['salary'].to_json()
