@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request
 
-import employee_headcount as Headcount
-import employee_salary as Salary
-from data import employees as database
+from data import database as db
+from models import employee_headcount as Headcount
+from models import employee_salary as Salary
 
 app = Flask(__name__)
 
@@ -14,14 +14,14 @@ def index():
 
 @app.route('/averages', methods=['GET'])
 def averages():
-    employees = database.all_employees
+    employees = db.employees
     return Salary.average_current_salaries_as_json(employees)
 
 
 @app.route('/headcount_over_time', methods=['GET'])
 def headcount_over_time():
     dept = request.args.get('department', '')
-    employees = database.all_employees
+    employees = db.employees
     return Headcount.monthly_headcount_as_json(employees, dept)
 
 
