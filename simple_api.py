@@ -1,11 +1,18 @@
 # python3
 
-from flask import Flask, jsonify
+import pandas as pd
 from flask import Flask, jsonify, render_template, request
 
-from data import employees
+from data import employees as data
 
 app = Flask(__name__)
+
+
+def unique_employees(dataframe):
+    dataframe['date'] = pd.to_datetime(dataframe['date'])
+    return dataframe.sort_values(
+        ['employee', 'date'], ascending=[True, False]).drop_duplicates(
+            subset='employee', keep='first')
 
 
 @app.route('/', methods=['GET'])
@@ -15,7 +22,9 @@ def index():
 
 @app.route('/averages', methods=['GET'])
 def averages():
-    return jsonify(employees.all_employees)
+    uniques_df = unique_employees(pd.DataFrame(data.all_employees))
+    avg_salaries = uniques_df[['dept', 'salary']].groupby('dept').agg('mean')
+    return avg_salaries['salary'].to_json()
 
 
 @app.route("/headcount_over_time", methods=['GET'])
