@@ -39,7 +39,7 @@
 *** Namespaces
 
    Logic for performing calculations on the given data set is housed in
-   [[https://github.com/jkrmr/salaries/blob/aebbcb26/models/employee_headcount.py][~models/employee_headcount.py~]] and [[https://github.com/jkrmr/salaries/blob/aebbcb26/models/employee_salary.py][~models/employee_salary.py~]].
+   [[https://github.com/jkrmr/salaries/blob/aebbcb26/models/employee_headcount.py][models/employee_headcount.py]] and [[https://github.com/jkrmr/salaries/blob/aebbcb26/models/employee_salary.py][models/employee_salary.py]].
 
 
 ** Tests
