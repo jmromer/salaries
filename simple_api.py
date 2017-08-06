@@ -1,5 +1,3 @@
-# python3
-
 from flask import Flask, render_template, request
 
 import employee_headcount as Headcount
