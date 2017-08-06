@@ -6,8 +6,17 @@ def average_current_salaries_as_json(employees_list):
     Compute the average current salaries in the data set employees_list.
     Return an object mapping department name to mean salary, as JSON.
 
-    employees_list - An array of dictionaries, each including the keys
+    Parameters
+    ----------
+    employees_list - A list of dictionaries, each including the keys
                       `date`, `employee`, `salary`, and `dept`.
+
+    Example JSON:
+    ------------
+    {
+      "Design": 64000,
+      "Engineering": 70000
+    }
     """
     # data frame for all employees
     df = pd.DataFrame(employees_list)
