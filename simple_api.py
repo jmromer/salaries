@@ -1,6 +1,7 @@
 # python3
 
 from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template, request
 
 from data import employees
 
@@ -9,16 +10,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def index():
-    return """
-    <h1>Available routes</h1>
-    <h2><pre>/averages</pre></h2>
-    Returns JSON mapping from a department name to that department's
-    average current salary.
-
-    <h2><pre>/headcount_over_time[?department=DEPT_NAME]</pre></h2>
-    Returns a headcount grouped by month.
-    Accepts an optional query param <code>department</code> to filter the list.
-    """
+    return render_template('index.html')
 
 
 @app.route('/averages', methods=['GET'])

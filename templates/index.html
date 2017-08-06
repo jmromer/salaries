@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Flaskr</title>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+  </head>
+
+  <body>
+    <h1>Available routes</h1>
+
+    <h2>
+      <a href='/averages'>
+        <pre>/averages</pre>
+      </a>
+    </h2>
+
+    <p>
+      Returns JSON mapping from a department name to that department's
+      average current salary.
+    </p>
+
+    <h2>
+      <a href='/headcount_over_time?department=Engineering'>
+        <pre>/headcount_over_time[?department=DEPT_NAME]</pre>
+      </a>
+    </h2>
+
+    <p>
+      Returns a headcount grouped by month.
+      Accepts an optional query param <code>department</code> to filter the list.
+    </p>
+  </body>
+</html>
