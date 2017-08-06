@@ -1,0 +1,77 @@
+* salaries
+
+** Dependencies
+
+  - Python 3.6
+  - Flask API
+  - Pandas
+  - Nose (for testing)
+
+  Install dependencies with ~pip install -r requirements.txt~.
+
+** Local development
+
+  Start the API server running locally with ~python simple_api.py~.
+
+** Architecture
+
+*** API
+
+  Request-handling logic is contained in ~simple_api.py~:
+
+  #+BEGIN_SRC python
+  # simple_api.py L15-L25 (aebbcb26)
+
+  @app.route('/averages', methods=['GET'])
+  def averages():
+      employees = db.employees
+      return Salary.average_current_salaries_as_json(employees)
+
+
+  @app.route('/headcount_over_time', methods=['GET'])
+  def headcount_over_time():
+      dept = request.args.get('department', '')
+      employees = db.employees
+      return Headcount.monthly_headcount_as_json(employees, dept)
+  #+END_SRC
+  [[https://github.com/jkrmr/salaries/blob/aebbcb26/simple_api.py#L15-L25][simple_api.py#L15-L25 (aebbcb26)]]
+
+*** Namespaces
+
+   Logic for performing calculations on the given data set is housed in
+   [[https://github.com/jkrmr/salaries/blob/aebbcb26/models/employee_headcount.py][~models/employee_headcount.py~]] and [[https://github.com/jkrmr/salaries/blob/aebbcb26/models/employee_salary.py][~models/employee_salary.py~]].
+
+
+** Tests
+
+  Tests are included in the ~tests~ directory and can be run locally with
+  ~nosetests tests~.
+
+  #+BEGIN_SRC python
+  # tests/employee_headcount_test.py L93-L115 (aebbcb26)
+
+      def test_counts_only_most_recent_entry_for_an_employee_within_month(self):
+          employees = [{
+              'date': '2015-01-01',
+              'employee': 2,
+              'salary': 10,
+              'dept': 'Engineering'
+          }, {
+              'date': '2015-01-15',
+              'employee': 2,
+              'salary': 10,
+              'dept': 'Design'
+          }, {
+              'date': '2015-02-15',
+              'employee': 3,
+              'salary': 10,
+              'dept': 'Engineering'
+          }]
+
+          headcount = Headcount.monthly_headcount_as_json(
+              employees, 'engineering')
+
+          expected = {'data': [{'month': '2015-02-01', 'headcount': 1}]}
+          assert_equal(json.loads(headcount), expected)
+  #+END_SRC
+  [[https://github.com/jkrmr/salaries/blob/aebbcb26/tests/employee_headcount_test.py#L93-L115][tests/employee_headcount_test.py#L93-L115 (aebbcb26)]]
