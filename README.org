@@ -22,27 +22,26 @@
   Request-handling logic is contained in ~simple_api.py~:
 
   #+BEGIN_SRC python
-  # simple_api.py L15-L25 (aebbcb26)
+  # simple_api.py L20-L30 (28e7228f)
 
   @app.route('/averages', methods=['GET'])
   def averages():
-      employees = db.employees
-      return Salary.average_current_salaries_as_json(employees)
+      averages = Salary.average_current_salaries(db.employees)
+      return jsonify(averages)
 
 
   @app.route('/headcount_over_time', methods=['GET'])
   def headcount_over_time():
       dept = request.args.get('department', '')
-      employees = db.employees
-      return Headcount.monthly_headcount_as_json(employees, dept)
+      headcounts = Headcount.monthly_headcounts(db.employees, dept)
+      return jsonify(headcounts)
   #+END_SRC
-  [[https://github.com/jkrmr/salaries/blob/aebbcb26/simple_api.py#L15-L25][simple_api.py#L15-L25 (aebbcb26)]]
+  [[https://github.com/jkrmr/salaries/blob/28e7228f/simple_api.py#L20-L30][simple_api.py#L20-L30 (28e7228f)]]
 
 *** Namespaces
 
    Logic for performing calculations on the given data set is housed in
-   [[https://github.com/jkrmr/salaries/blob/aebbcb26/models/employee_headcount.py][models/employee_headcount.py]] and [[https://github.com/jkrmr/salaries/blob/aebbcb26/models/employee_salary.py][models/employee_salary.py]].
-
+   [[https://github.com/jkrmr/salaries/blob/28e7228f/models/employee_headcount.py][models/employee_headcount.py]] and [[https://github.com/jkrmr/salaries/blob/28e7228f/models/employee_salary.py][models/employee_salary.py]].
 
 ** Tests
 
@@ -50,30 +49,29 @@
   ~nosetests tests~.
 
   #+BEGIN_SRC python
-  # tests/employee_headcount_test.py L93-L115 (aebbcb26)
+  # tests/employee_headcount_test.py L92-L113 (28e7228f)
 
-      def test_counts_only_most_recent_entry_for_an_employee_within_month(self):
-          employees = [{
-              'date': '2015-01-01',
-              'employee': 2,
-              'salary': 10,
-              'dept': 'Engineering'
-          }, {
-              'date': '2015-01-15',
-              'employee': 2,
-              'salary': 10,
-              'dept': 'Design'
-          }, {
-              'date': '2015-02-15',
-              'employee': 3,
-              'salary': 10,
-              'dept': 'Engineering'
-          }]
+  def test_counts_only_most_recent_entry_for_an_employee_within_month(self):
+      employees = [{
+          'date': '2015-01-01',
+          'employee': 2,
+          'salary': 10,
+          'dept': 'Engineering'
+      }, {
+          'date': '2015-01-15',
+          'employee': 2,
+          'salary': 10,
+          'dept': 'Design'
+      }, {
+          'date': '2015-02-15',
+          'employee': 3,
+          'salary': 10,
+          'dept': 'Engineering'
+      }]
 
-          headcount = Headcount.monthly_headcount_as_json(
-              employees, 'engineering')
+      headcount = Headcount.monthly_headcounts(employees, 'engineering')
 
-          expected = {'data': [{'month': '2015-02-01', 'headcount': 1}]}
-          assert_equal(json.loads(headcount), expected)
+      expected = {'data': [{'month': '2015-02-01', 'headcount': 1}]}
+      assert_equal(headcount, expected)
   #+END_SRC
-  [[https://github.com/jkrmr/salaries/blob/aebbcb26/tests/employee_headcount_test.py#L93-L115][tests/employee_headcount_test.py#L93-L115 (aebbcb26)]]
+  [[https://github.com/jkrmr/salaries/blob/28e7228f/tests/employee_headcount_test.py#L92-L113][tests/employee_headcount_test.py#L92-L113 (28e7228f)]]
