@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, jsonify, render_template, request
 
 from data import database as db
 from models import employee_headcount as Headcount
@@ -10,6 +10,11 @@ app = Flask(__name__)
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
+
+
+@app.route('/salaries', methods=['GET'])
+def salaries():
+    return jsonify(db.employees)
 
 
 @app.route('/averages', methods=['GET'])

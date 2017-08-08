@@ -6,7 +6,17 @@
   </head>
 
   <body>
-    <h1>Available routes</h1>
+    <h1>Available endpoints</h1>
+
+    <h2>
+      <a href='/salaries'>
+        <pre>/salaries</pre>
+      </a>
+    </h2>
+
+    <p>
+      Returns the complete data set, as JSON.
+    </p>
 
     <h2>
       <a href='/averages'>
@@ -26,8 +36,11 @@
     </h2>
 
     <p>
-      Returns a headcount grouped by month.
-      Accepts an optional query param <code>department</code> to filter the list.
+      Returns a headcount grouped by month, as a JSON array nested under the
+      <code>"data"</code> key.
+
+      Accepts an optional query param <code>department</code> to filter the
+      list.
     </p>
   </body>
 </html>
