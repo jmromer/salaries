@@ -19,8 +19,8 @@ def salaries():
 
 @app.route('/averages', methods=['GET'])
 def averages():
-    employees = db.employees
-    return Salary.average_current_salaries_as_json(employees)
+    averages = Salary.average_current_salaries(db.employees)
+    return jsonify(averages)
 
 
 @app.route('/headcount_over_time', methods=['GET'])

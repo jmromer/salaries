@@ -1,9 +1,7 @@
-import json
-
 from models import employee_salary as Salary
 
 
-class Test_average_current_salaries_as_json(object):
+class Test_average_current_salaries(object):
     def test_correctly_computes_avg_salary_by_dept(self):
         employees = [{
             'date': '2015-01-01',
@@ -26,12 +24,11 @@ class Test_average_current_salaries_as_json(object):
             'salary': 25,
             'dept': 'Design'
         }]
-        mean_salaries = Salary.average_current_salaries_as_json(employees)
+        mean_salaries = Salary.average_current_salaries(employees)
 
         expected = {'Engineering': 17.5, 'Design': 30}
-        assert expected == json.loads(
-            mean_salaries), '\nActual: %s\nExpected: %s' % (mean_salaries,
-                                                            expected)
+        assert expected == mean_salaries, '\nActual: %s\nExpected: %s' % (
+            mean_salaries, expected)
 
     def test_only_counts_an_employees_current_position(self):
         employees = [{
@@ -55,9 +52,8 @@ class Test_average_current_salaries_as_json(object):
             'salary': 25,
             'dept': 'Sales'
         }]
-        mean_salaries = Salary.average_current_salaries_as_json(employees)
+        mean_salaries = Salary.average_current_salaries(employees)
 
         expected = {'Design': 20, 'Sales': 25}
-        assert expected == json.loads(
-            mean_salaries), '\nActual: %s\nExpected: %s' % (mean_salaries,
-                                                            expected)
+        assert expected == mean_salaries, '\nActual: %s\nExpected: %s' % (
+            mean_salaries, expected)
