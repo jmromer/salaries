@@ -1,10 +1,9 @@
-import json
-
-from models import employee_headcount as Headcount
 from nose.tools import assert_equal
 
+from models import employee_headcount as Headcount
 
-class Test_monthly_headcount_as_json(object):
+
+class Test_monthly_headcounts(object):
     def test_correctly_counts_employees_per_month(self):
         employees = [{
             'date': '2015-01-01',
@@ -23,7 +22,7 @@ class Test_monthly_headcount_as_json(object):
             'dept': 'Engineering'
         }]
 
-        headcount = Headcount.monthly_headcount_as_json(employees)
+        headcount = Headcount.monthly_headcounts(employees)
 
         expected = {
             'data': [{
@@ -34,7 +33,7 @@ class Test_monthly_headcount_as_json(object):
                 'headcount': 1
             }]
         }
-        assert_equal(json.loads(headcount), expected)
+        assert_equal(headcount, expected)
 
     def test_does_not_count_duplicates_within_a_month(self):
         employees = [{
@@ -54,7 +53,7 @@ class Test_monthly_headcount_as_json(object):
             'dept': 'Engineering'
         }]
 
-        headcount = Headcount.monthly_headcount_as_json(employees)
+        headcount = Headcount.monthly_headcounts(employees)
 
         expected = {
             'data': [{
@@ -65,7 +64,7 @@ class Test_monthly_headcount_as_json(object):
                 'headcount': 1
             }]
         }
-        assert_equal(json.loads(headcount), expected)
+        assert_equal(headcount, expected)
 
     def test_filters_search_by_department_if_provided(self):
         employees = [{
@@ -85,10 +84,10 @@ class Test_monthly_headcount_as_json(object):
             'dept': 'Engineering'
         }]
 
-        headcount = Headcount.monthly_headcount_as_json(employees, 'design')
+        headcount = Headcount.monthly_headcounts(employees, 'design')
 
         expected = {'data': [{'month': '2015-01-01', 'headcount': 1}]}
-        assert_equal(json.loads(headcount), expected)
+        assert_equal(headcount, expected)
 
     def test_counts_only_most_recent_entry_for_an_employee_within_month(self):
         employees = [{
@@ -108,11 +107,10 @@ class Test_monthly_headcount_as_json(object):
             'dept': 'Engineering'
         }]
 
-        headcount = Headcount.monthly_headcount_as_json(
-            employees, 'engineering')
+        headcount = Headcount.monthly_headcounts(employees, 'engineering')
 
         expected = {'data': [{'month': '2015-02-01', 'headcount': 1}]}
-        assert_equal(json.loads(headcount), expected)
+        assert_equal(headcount, expected)
 
     def test_returns_an_empty_data_set_if_dept_name_unrecognized(self):
         employees = [{
@@ -122,7 +120,6 @@ class Test_monthly_headcount_as_json(object):
             'dept': 'Engineering'
         }]
 
-        headcount = Headcount.monthly_headcount_as_json(
-            employees, 'animal husbandry')
+        headcount = Headcount.monthly_headcounts(employees, 'animal husbandry')
 
-        assert_equal(json.loads(headcount), {'data': []})
+        assert_equal(headcount, {'data': []})

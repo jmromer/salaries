@@ -1,12 +1,10 @@
-import json
-
 import pandas as pd
 
 
-def monthly_headcount_as_json(employees_list, department=None):
+def monthly_headcounts(employees_list, department=None):
     """
-    Calculate monthly head counts from the data set employees_list.
-    Return a list of records as JSON.
+    Calculate monthly head counts from the data set `employees_list`.
+    Return a list of records within a dictionary nested under "data".
 
     If a department is specified, calculate monthly head counts only for that
     department.
@@ -18,15 +16,12 @@ def monthly_headcount_as_json(employees_list, department=None):
 
     department - An optional department name, as a String
 
-    Example JSON:
-    ------------
+    Example result:
+    --------------
     {
-      "data": [
-        {"month": "2015-05-01",
-        "headcount": 5},
-        {"month": "2015-06-01",
-        "headcount": 6},
-        ...
+      'data': [
+        {'month': '2015-05-01', 'headcount': 5},
+        {'month': '2015-06-01', 'headcount': 6}
       ]
     }
     """
@@ -57,6 +52,6 @@ def monthly_headcount_as_json(employees_list, department=None):
     df.insert(0, 'month', [time.strftime('%Y-%m-%d') for time in df.index])
 
     # convert to a list of records
-    headcounts_dict = df.to_dict(orient='records')
+    headcounts_list = df.to_dict(orient='records')
 
-    return json.dumps({'data': headcounts_dict})
+    return {'data': headcounts_list}
