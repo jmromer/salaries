@@ -7,26 +7,39 @@ class Test_average_current_salaries(object):
             'date': '2015-01-01',
             'employee': 2,
             'salary': 15,
-            'dept': 'Engineering'
+            'dept': 'Engineering',
+            'gender': 'male'
         }, {
             'date': '2015-01-01',
             'employee': 4,
             'salary': 20,
-            'dept': 'Engineering'
+            'dept': 'Engineering',
+            'gender': 'female'
         }, {
             'date': '2015-02-01',
             'employee': 3,
             'salary': 35,
-            'dept': 'Design'
+            'dept': 'Design',
+            'gender': 'female'
         }, {
             'date': '2015-02-01',
             'employee': 5,
             'salary': 25,
-            'dept': 'Design'
+            'dept': 'Design',
+            'gender': 'male'
         }]
         mean_salaries = Salary.average_current_salaries(employees)
 
-        expected = {'Engineering': 17.5, 'Design': 30}
+        expected = {
+            'Engineering': {
+                'male': 15,
+                'female': 20
+            },
+            'Design': {
+                'male': 25,
+                'female': 35
+            }
+        }
         assert expected == mean_salaries, '\nActual: %s\nExpected: %s' % (
             mean_salaries, expected)
 
@@ -35,25 +48,29 @@ class Test_average_current_salaries(object):
             'date': '2015-01-01',
             'employee': 2,
             'salary': 15,
-            'dept': 'Engineering'
+            'dept': 'Engineering',
+            'gender': 'male'
         }, {
             'date': '2015-01-15',
             'employee': 2,
             'salary': 20,
-            'dept': 'Design'
+            'dept': 'Design',
+            'gender': 'male'
         }, {
             'date': '2015-02-01',
             'employee': 3,
             'salary': 35,
-            'dept': 'Design'
+            'dept': 'Design',
+            'gender': 'female'
         }, {
             'date': '2015-02-15',
             'employee': 3,
             'salary': 25,
-            'dept': 'Sales'
+            'dept': 'Sales',
+            'gender': 'female'
         }]
         mean_salaries = Salary.average_current_salaries(employees)
 
-        expected = {'Design': 20, 'Sales': 25}
+        expected = {'Design': {'male': 20}, 'Sales': {'female': 25}}
         assert expected == mean_salaries, '\nActual: %s\nExpected: %s' % (
             mean_salaries, expected)

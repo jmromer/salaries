@@ -1,22 +1,24 @@
+from collections import defaultdict
+
 import pandas as pd
 
 
 def average_current_salaries(employees_list):
     """
     Compute the average current salaries in the data set employees_list.
-    Return an object mapping department name to mean salary, as a
+    Return an object mapping department name to mean salary by gender, as a
     dictionary.
 
     Parameters
     ----------
     employees_list - A list of dictionaries, each including the keys
-                      `date`, `employee`, `salary`, and `dept`.
+                      `date`, `dept`, `employee`, `salary`, and `gender`.
 
     Example result:
     --------------
     {
-      'Design': 64000,
-      'Engineering': 70000
+      'Design': {'male': 64000, 'female': 95000},
+      'Engineering': {'male': 33000.67, 'female': 22000.33}
     }
     """
     # data frame for all employees
@@ -29,13 +31,12 @@ def average_current_salaries(employees_list):
         ['employee', 'date'], ascending=[True, False]).drop_duplicates(
             subset='employee', keep='first')
 
-    # compute mean salary for each department
-    df = df[['dept', 'salary']].groupby('dept').agg('mean')
+    # compute mean salary for each department, grouped by gender
+    df = df[['dept', 'salary', 'gender']].groupby(['dept',
+                                                   'gender']).agg('mean')
 
-    # dict mapping department name to mean salary
-    mean_salaries = {
-        dept: float(mean_salary)
-        for (dept, mean_salary) in df['salary'].to_dict().items()
-    }
+    mean_salaries = defaultdict(dict)
+    for ((dept, gender), mean_salary) in df['salary'].to_dict().items():
+        mean_salaries[dept][gender] = round(mean_salary, 2)
 
-    return mean_salaries
+    return dict(mean_salaries)

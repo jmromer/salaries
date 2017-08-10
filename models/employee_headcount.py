@@ -12,7 +12,7 @@ def monthly_headcounts(employees_list, department=None):
     Parameters:
     ----------
     employees_list - A list of dictionaries, each including the keys
-                     `date`, `employee`, `salary`, and `dept`.
+                     `date`, `dept`, `employee`, `salary`, and `gender`.
 
     department - An optional department name, as a String
 
