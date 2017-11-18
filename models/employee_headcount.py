@@ -25,6 +25,13 @@ def monthly_headcounts(employees_list, department=None):
       ]
     }
     """
+    # df = pd.DataFrame(employees_list)
+    # df = date_to_datetime(df)
+    # df = add_month_from_date(df)
+    # df = sort_by_month_keeping_latest(df)
+    # df = restrict_search_to_department(df, department)
+    # df = map_months_to_employee_headcounts(df)
+
     # yapf: disable
     df = (pd
           .DataFrame(employees_list)

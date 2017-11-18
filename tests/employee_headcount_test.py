@@ -1,6 +1,5 @@
-from nose.tools import assert_equal
-
 from models import employee_headcount as Headcount
+from nose.tools import assert_equal
 
 
 class Test_monthly_headcounts(object):
@@ -30,7 +29,7 @@ class Test_monthly_headcounts(object):
                 'headcount': 2
             }, {
                 'month': '2015-02-01',
-                'headcount': 1
+                'headcount': 3
             }]
         }
         assert_equal(headcount, expected)
@@ -61,7 +60,7 @@ class Test_monthly_headcounts(object):
                 'headcount': 1
             }, {
                 'month': '2015-02-01',
-                'headcount': 1
+                'headcount': 2
             }]
         }
         assert_equal(headcount, expected)
@@ -86,7 +85,7 @@ class Test_monthly_headcounts(object):
 
         headcount = Headcount.monthly_headcounts(employees, 'design')
 
-        expected = {'data': [{'month': '2015-01-01', 'headcount': 1}]}
+        expected = {'data': [{'month': '2015-02-01', 'headcount': 1}]}
         assert_equal(headcount, expected)
 
     def test_counts_only_most_recent_entry_for_an_employee_within_month(self):
