@@ -25,13 +25,13 @@ def monthly_headcounts(employees_list, department=None):
       ]
     }
     """
-    # df = pd.DataFrame(employees_list)
-    # df = date_to_datetime(df)
-    # df = add_month_from_date(df)
-    # df = sort_by_month_keeping_latest(df)
-    # df = restrict_search_to_department(df, department)
-    # df = map_months_to_employee_headcounts(df)
+    # convert to a list of records
+    df = generate_headcounts_df(employees_list, department)
+    headcounts_list = df.to_dict(orient='records')
+    return {'data': headcounts_list}
 
+
+def generate_headcounts_df(employees_list, department):
     # yapf: disable
     df = (pd
           .DataFrame(employees_list)
@@ -39,17 +39,27 @@ def monthly_headcounts(employees_list, department=None):
           .pipe(add_month_from_date)
           .pipe(sort_by_month_keeping_latest)
           .pipe(restrict_search_to_department, department)
-          .pipe(map_months_to_employee_headcounts))
+          .pipe(map_months_to_added_employee_counts)
+          .pipe(convert_added_employee_counts_to_cumulative_counts))
     # yapf: enable
-
-    # convert to a list of records
-    headcounts_list = df.to_dict(orient='records')
-    return {'data': headcounts_list}
+    return df
 
 
-def map_months_to_employee_headcounts(df):
+def convert_added_employee_counts_to_cumulative_counts(df):
+    """
+    Replace monthly new-hire counts with the cumulative sum of employees
+    hired to date.
+
+    TODO (once firing events are implemented): Drop fired employees.
+    """
+    df = df.copy()
+    df['headcount'] = df['headcount'].cumsum()
+    return df
+
+
+def map_months_to_added_employee_counts(df):
     """Map months to employee counts."""
-    df.copy()
+    df = df.copy()
     df = df[['month', 'employee']].groupby('month').agg('count')
     df.rename(columns={'employee': 'headcount'}, inplace=True)
     df.insert(0, 'month', [time.strftime('%Y-%m-%d') for time in df.index])
