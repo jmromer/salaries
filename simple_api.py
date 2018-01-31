@@ -25,7 +25,7 @@ def averages():
 
 @app.route('/headcount_over_time', methods=['GET'])
 def headcount_over_time():
-    dept = request.args.get('department', '')
+    dept = request.args.get('department')
     headcounts = Headcount.monthly_headcounts(db.employees, dept)
     return jsonify(headcounts)
 
