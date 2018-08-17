@@ -1,6 +1,6 @@
 * salaries
 
-  [[https://circleci.com/gh/jkrmr/salaries][https://circleci.com/gh/jkrmr/salaries.svg?style=svg]]
+  [[https://circleci.com/gh/jkrmr/salaries][file:https://circleci.com/gh/jmromer/salaries.svg]]
 
 ** Dependencies
 
