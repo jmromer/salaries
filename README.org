@@ -41,7 +41,25 @@
 *** Namespaces
 
    Logic for performing calculations on the given data set is housed in
-   [[https://github.com/jkrmr/salaries/blob/28e7228f/models/employee_headcount.py][models/employee_headcount.py]] and [[https://github.com/jkrmr/salaries/blob/28e7228f/models/employee_salary.py][models/employee_salary.py]].
+   [[https://github.com/jkrmr/salaries/blob/master/models/employee_headcount.py][models/employee_headcount.py]] and [[https://github.com/jkrmr/salaries/blob/master/models/employee_salary.py][models/employee_salary.py]].
+
+   #+BEGIN_SRC python
+   # models/employee_headcount.py L34-45 (ddbd9c166a)
+
+   def generate_headcounts_df(employees_list, department):
+       # yapf: disable
+       df = (pd
+             .DataFrame(employees_list)
+             .pipe(date_to_datetime)
+             .pipe(add_month_from_date)
+             .pipe(sort_by_month_keeping_latest)
+             .pipe(restrict_search_to_department, department)
+             .pipe(map_months_to_added_employee_counts)
+             .pipe(convert_added_employee_counts_to_cumulative_counts))
+       # yapf: enable
+       return df
+   #+END_SRC
+   [[https://github.com/jkrmr/salaries/blob/ddbd9c166a/models/employee_headcount.py#L34-L45][models/employee_headcount.py L34-45 (ddbd9c166a)]]
 
 ** Tests
 
